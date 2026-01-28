@@ -1,6 +1,6 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "cd backend && npm install"
+buildCommand = "cd backend && npm install --legacy-peer-deps"
 
 [deploy]
 startCommand = "cd backend && npm start"
@@ -9,3 +9,6 @@ restartPolicyMaxRetries = 10
 
 [env]
 NODE_ENV = "production"
+
+[build.nixpacks]
+installCommand = "npm install --legacy-peer-deps"
