@@ -1,10 +1,14 @@
 import { io } from "socket.io-client";
 
-// Detect environment
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 
-  (typeof window !== "undefined" && window.location.hostname === "localhost"
-    ? "http://localhost:5000"
-    : "https://matrimonial-app-production-d5ac.up.railway.app"); // Fallback to actual Railway URL
+// Detect environment - only use localhost if actually on a local machine
+const isLocalhost = typeof window !== "undefined" && 
+  (window.location.hostname === "localhost" || 
+   window.location.hostname === "127.0.0.1" ||
+   window.location.hostname.startsWith("192.168."));
+
+const BACKEND_URL = isLocalhost 
+  ? "http://localhost:5000" 
+  : "https://matrimonial-app-production-d5ac.up.railway.app"; // Production Railway URL
 
 console.log(`[Socket] Connecting to: ${BACKEND_URL}`);
 
