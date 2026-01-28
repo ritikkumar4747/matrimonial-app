@@ -4,7 +4,7 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_BACKEND_URL || (
   typeof window !== "undefined" && window.location.hostname === "localhost"
     ? "http://localhost:5000"
-    : "https://your-production-backend.com" // Will be set via .env
+    : "https://matrimonial-app-production-d5ac.up.railway.app" // Fallback to actual Railway URL
 );
 
 const API = axios.create({
