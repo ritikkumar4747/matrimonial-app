@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../services/api";
 
 const Badges = ({ userId }) => {
   const [badges, setBadges] = useState([]);
@@ -8,18 +8,19 @@ const Badges = ({ userId }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!userId) {
+      setBadges([]);
+      setProgress(null);
+      setLoading(false);
+      return;
+    }
     fetchBadges();
     fetchProgress();
   }, [userId]);
 
   const fetchBadges = async () => {
     try {
-      const response = await axios.get(
-        `/api/badges/${userId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await API.get(`/badges/${userId}`);
       setBadges(response.data);
     } catch (error) {
       console.error("Error fetching badges:", error);
@@ -28,12 +29,7 @@ const Badges = ({ userId }) => {
 
   const fetchProgress = async () => {
     try {
-      const response = await axios.get(
-        `/api/badges/${userId}/progress`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
+      const response = await API.get(`/badges/${userId}/progress`);
       setProgress(response.data);
     } catch (error) {
       console.error("Error fetching progress:", error);

@@ -7,6 +7,11 @@ const ProfileStrengthMeter = ({ userId }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!userId) {
+      setProfileData(null);
+      setLoading(false);
+      return;
+    }
     fetchProfileStrength();
   }, [userId]);
 
