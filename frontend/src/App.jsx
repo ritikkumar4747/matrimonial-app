@@ -12,6 +12,7 @@ import Sent from "./pages/Sent";
 import Received from "./pages/Received";
 import Chat from "./pages/Chat";
 import DailyMatch from "./pages/DailyMatch";
+import Gallery from "./pages/Gallery";
 
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
@@ -63,6 +64,16 @@ export default function App() {
         <Route
           path="/profile/:id"
           element={<PrivateRoute><PrivateLayout><Profile /></PrivateLayout></PrivateRoute>}
+        />
+
+        <Route
+          path="/gallery"
+          element={<PrivateRoute><PrivateLayout><Gallery /></PrivateLayout></PrivateRoute>}
+        />
+
+        <Route
+          path="/gallery/:id"
+          element={<PrivateRoute><PrivateLayout><Gallery /></PrivateLayout></PrivateRoute>}
         />
 
         <Route

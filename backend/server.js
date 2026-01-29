@@ -17,6 +17,7 @@ import badgeRoutes from "./routes/badgeRoutes.js";
 import successStoryRoutes from "./routes/successStoryRoutes.js";
 import icebreakerRoutes from "./routes/icebreakerRoutes.js";
 import profileStrengthRoutes from "./routes/profileStrengthRoutes.js";
+import galleryRoutes from "./routes/galleryRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -63,6 +64,7 @@ app.use("/api/badges", badgeRoutes);
 app.use("/api/success-stories", successStoryRoutes);
 app.use("/api/icebreakers", icebreakerRoutes);
 app.use("/api/profile-strength", profileStrengthRoutes);
+app.use("/api/gallery", galleryRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running");

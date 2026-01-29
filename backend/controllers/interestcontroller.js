@@ -57,28 +57,31 @@ export const updateStatus = async (req, res) => {
 };
 export const getMutualMatches = async (req, res) => {
   try {
-    // Any interest accepted: I sent and they accepted, OR they sent and I accepted
-    const accepted = await Interest.find({
-      $or: [
-        { from: req.user._id, status: "accepted" },
-        { to: req.user._id, status: "accepted" }
-      ]
-    }).populate("from", "name city profession photo").populate("to", "name city profession photo");
+    // Get all interests where BOTH sides have accepted
+    // Case 1: I sent interest AND they sent me interest (both accepted)
+    const mutualInterests = await Interest.find({
+      from: req.user._id,
+      status: "accepted"
+    }).populate("to", "name city profession photo verified isPremium dob gender");
 
-    // Extract the other person from each accepted interest
-    const mutualUsers = accepted.map(interest => {
-      return interest.from._id.toString() === req.user._id.toString() 
-        ? interest.to 
-        : interest.from;
+    // Get matching interests where they sent me something
+    const theirInterests = await Interest.find({
+      to: req.user._id,
+      status: "accepted"
+    }).populate("from", "name city profession photo verified isPremium dob gender");
+
+    // Combine and get unique users
+    const mutualUserMap = new Map();
+
+    mutualInterests.forEach(interest => {
+      mutualUserMap.set(interest.to._id.toString(), interest.to);
     });
 
-    // Remove duplicates by ID
-    const uniqueMap = new Map();
-    mutualUsers.forEach(user => {
-      uniqueMap.set(user._id.toString(), user);
+    theirInterests.forEach(interest => {
+      mutualUserMap.set(interest.from._id.toString(), interest.from);
     });
 
-    res.json(Array.from(uniqueMap.values()));
+    res.json(Array.from(mutualUserMap.values()));
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

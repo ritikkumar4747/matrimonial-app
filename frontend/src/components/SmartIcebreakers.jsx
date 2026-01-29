@@ -38,12 +38,17 @@ const SmartIcebreakers = ({ matchedUserId }) => {
 
   const handleSendMessage = async (icebreakerMessage) => {
     try {
+      if (!icebreakerMessage || !matchedUserId) {
+        console.warn("Missing icebreakerMessage or matchedUserId");
+        return;
+      }
+      
       // Send message via chat API
       await API.post(
         `/chat/send`,
         {
-          to: matchedUserId,
-          message: icebreakerMessage,
+          receiver: matchedUserId,
+          text: icebreakerMessage,
         }
       );
 
@@ -58,6 +63,7 @@ const SmartIcebreakers = ({ matchedUserId }) => {
       setSent(true);
     } catch (error) {
       console.error("Error sending message:", error);
+      alert("Failed to send icebreaker message. Please try again.");
     }
   };
 

@@ -21,6 +21,7 @@ export default function Navbar() {
     { path: "/matches/mutual", label: "Mutual", icon: "💑" },
     { path: "/received", label: "Received", icon: "💌" },
     { path: "/sent", label: "Sent", icon: "📤" },
+    { path: "/gallery", label: "Gallery", icon: "📸" },
     { path: "/profile", label: "Profile", icon: "👤" },
   ];
 
