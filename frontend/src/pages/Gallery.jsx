@@ -219,7 +219,9 @@ export default function Gallery() {
                   <img
                     src={getAssetUrl(post.photo)}
                     alt={post.caption}
-                   viewMode === "my" && post.user?._id === currentUser?._id && (
+                    className="w-full h-64 object-cover"
+                  />
+                  {viewMode === "my" && post.user?._id === currentUser?._id && (
                     <button
                       onClick={() => deletePost(post._id)}
                       className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
@@ -242,9 +244,7 @@ export default function Gallery() {
                       {post.user.name}
                     </span>
                   </div>
-                )}button>
-                  )}
-                </div>
+                )}
 
                 {post.caption && (
                   <div className="p-4 border-t border-gray-200">
