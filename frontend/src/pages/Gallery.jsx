@@ -9,25 +9,40 @@ export default function Gallery() {
   const { id } = useParams();
   const { user: currentUser } = useContext(AuthContext);
   const isOwn = !id;
-  const userId = isOwn ? currentUser?._id : id;
+  const isFeed = !id; // If no ID in URL, show feed
+  const userId = id || currentUser?._id;
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uploadingIndex, setUploadingIndex] = useState(-1);
   const [caption, setCaption] = useState("");
+  const [viewMode, setViewMode] = useState("feed"); // "feed" or "my"
 
   useEffect(() => {
     fetchPosts();
-  }, [userId]);
+  }, [userId, viewMode]);
 
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const endpoint = isOwn ? "/gallery/my" : `/gallery/${userId}`;
+      let endpoint;
+      
+      if (isFeed && viewMode === "feed") {
+        endpoint = "/gallery/feed"; // All mutually matched users
+      } else if (isFeed && viewMode === "my") {
+        endpoint = "/gallery/my"; // Only my posts
+      } else {
+        endpoint = `/gallery/${userId}`; // Specific user
+      }
+      
       const { data } = await API.get(endpoint);
       setPosts(data);
     } catch (err) {
       console.error("Error fetching posts:", err);
+      if (err.response?.status === 403) {
+        alert("You can only view gallery of mutually matched users");
+        setPosts([]);
+      }
     } finally {
       setLoading(false);
     }
@@ -75,17 +90,43 @@ export default function Gallery() {
           className="mb-8"
         >
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            {isOwn ? "📸 My Gallery" : "📸 Gallery"}
+            {isFeed ? "📸 Gallery" : "📸 User Gallery"}
           </h1>
           <p className="text-gray-600">
-            {isOwn
-              ? "Share your moments. Let others see the real you!"
-              : "Explore their beautiful moments"}
+            {isFeed
+              ? "Explore moments from your matches"
+              : "View their beautiful moments"}
           </p>
+
+          {/* View Mode Toggle (only for own gallery) */}
+          {isFeed && (
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => setViewMode("feed")}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  viewMode === "feed"
+                    ? "bg-primary-500 text-white shadow-md"
+                    : "bg-white text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                🌟 Feed
+              </button>
+              <button
+                onClick={() => setViewMode("my")}
+                className={`px-4 py-2 rounded-lg font-medium transition-all ${
+                  viewMode === "my"
+                    ? "bg-primary-500 text-white shadow-md"
+                    : "bg-white text-gray-700 hover:bg-gray-100"
+                }`}
+              >
+                📷 My Posts
+              </button>
+            </div>
+          )}
         </motion.div>
 
-        {/* Upload Section - Own Profile Only */}
-        {isOwn && (
+        {/* Upload Section - Only for My Posts */}
+        {isFeed && viewMode === "my" && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -127,7 +168,9 @@ export default function Gallery() {
               </div>
 
               <input
-                type="text"
+                tFeed && viewMode === "feed"
+                ? "No posts from your matches yet"
+                : isFeed && viewMode === "my"="text"
                 placeholder="Add a caption... (optional)"
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
@@ -176,9 +219,7 @@ export default function Gallery() {
                   <img
                     src={getAssetUrl(post.photo)}
                     alt={post.caption}
-                    className="w-full h-64 object-cover"
-                  />
-                  {isOwn && (
+                   viewMode === "my" && post.user?._id === currentUser?._id && (
                     <button
                       onClick={() => deletePost(post._id)}
                       className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600 transition-colors"
@@ -186,6 +227,22 @@ export default function Gallery() {
                     >
                       🗑️
                     </button>
+                  )}
+                </div>
+
+                {/* User Info (for feed view) */}
+                {viewMode === "feed" && post.user && (
+                  <div className="p-3 border-b border-gray-200 flex items-center gap-3">
+                    <img
+                      src={getAssetUrl(post.user.photo)}
+                      alt={post.user.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <span className="font-semibold text-gray-800">
+                      {post.user.name}
+                    </span>
+                  </div>
+                )}button>
                   )}
                 </div>
 

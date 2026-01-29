@@ -107,6 +107,26 @@ export default function MutualMatches() {
                   </svg>
                 </Link>
               </div>
+              
+              {/* Call Buttons */}
+              <div className="flex gap-2 mt-3">
+                <Link
+                  to={`/chat/${user._id}?call=audio`}
+                  className="flex-1 py-2 px-3 bg-blue-100 text-blue-600 rounded-xl hover:bg-blue-200 transition-colors flex items-center justify-center gap-2"
+                  title="Audio Call"
+                >
+                  <span className="text-lg">📞</span>
+                  <span className="text-sm font-medium">Call</span>
+                </Link>
+                <Link
+                  to={`/chat/${user._id}?call=video`}
+                  className="flex-1 py-2 px-3 bg-purple-100 text-purple-600 rounded-xl hover:bg-purple-200 transition-colors flex items-center justify-center gap-2"
+                  title="Video Call"
+                >
+                  <span className="text-lg">🎥</span>
+                  <span className="text-sm font-medium">Video</span>
+                </Link>
+              </div>
             </motion.div>
           ))}
         </div>

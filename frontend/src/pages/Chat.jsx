@@ -584,8 +584,18 @@ export default function Chat() {
           </div>
         ) : (
           messages.map((msg) => {
-            const fromMe = msg.sender === undefined ? msg.fromMe : (msg.sender?._id || msg.sender) === userId;
-            const senderName = fromMe ? "You" : (msg.sender?.name || "Partner");
+            // Determine if message is from current user
+            let fromMe = false;
+            if (msg.sender) {
+              const senderId = typeof msg.sender === 'object' ? msg.sender._id : msg.sender;
+              fromMe = senderId === userId;
+            } else if (msg.fromMe !== undefined) {
+              fromMe = msg.fromMe;
+            }
+            
+            // Get sender name
+            const senderName = fromMe ? "You" : (typeof msg.sender === 'object' && msg.sender?.name ? msg.sender.name : "Partner");
+            
             return (
               <div
                 key={msg._id || msg.createdAt}
