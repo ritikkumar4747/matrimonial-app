@@ -168,9 +168,7 @@ export default function Gallery() {
               </div>
 
               <input
-                tFeed && viewMode === "feed"
-                ? "No posts from your matches yet"
-                : isFeed && viewMode === "my"="text"
+                type="text"
                 placeholder="Add a caption... (optional)"
                 value={caption}
                 onChange={(e) => setCaption(e.target.value)}
@@ -196,7 +194,9 @@ export default function Gallery() {
               No posts yet
             </h3>
             <p className="text-gray-500">
-              {isOwn
+              {isFeed && viewMode === "feed"
+                ? "No posts from your matches yet"
+                : isFeed && viewMode === "my"
                 ? "Start by uploading your first photo!"
                 : "This gallery is empty"}
             </p>
