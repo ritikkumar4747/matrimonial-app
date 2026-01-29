@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import API from "../services/api";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { getAssetUrl } from "../utils/apiConfig";
 
 export default function Matches() {
   const [users, setUsers] = useState([]);
@@ -214,7 +215,7 @@ export default function Matches() {
                 <div className="relative h-72 overflow-hidden bg-gradient-to-br from-primary-100 to-secondary-100">
                   {user.photo ? (
                     <img
-                      src={`http://localhost:5000${user.photo}`}
+                      src={getAssetUrl(user.photo)}
                       alt={user.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />

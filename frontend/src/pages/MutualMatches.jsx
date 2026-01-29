@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import API from "../services/api";
 import { motion } from "framer-motion";
+import { getAssetUrl } from "../utils/apiConfig";
 
 export default function MutualMatches() {
   const [matches, setMatches] = useState([]);
@@ -63,7 +64,7 @@ export default function MutualMatches() {
                 <div className="w-32 h-32 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-5xl font-bold overflow-hidden shadow-lg">
                   {user.photo ? (
                     <img
-                      src={`http://localhost:5000${user.photo}`}
+                      src={getAssetUrl(user.photo)}
                       alt={user.name}
                       className="w-full h-full object-cover"
                     />

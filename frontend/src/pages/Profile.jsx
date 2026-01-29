@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import ProfileStrengthMeter from "../components/ProfileStrengthMeter";
 import Badges from "../components/Badges";
+import { getAssetUrl } from "../utils/apiConfig";
 
 export default function Profile() {
   const { id } = useParams();
@@ -148,7 +149,7 @@ export default function Profile() {
               <div className="w-40 h-40 rounded-2xl overflow-hidden bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-5xl font-bold shadow-lg">
                 {preview || profile.photo ? (
                   <img
-                    src={preview || `http://localhost:5000${profile.photo}`}
+                    src={preview || getAssetUrl(profile.photo)}
                     alt={profile.name}
                     className="w-full h-full object-cover"
                   />

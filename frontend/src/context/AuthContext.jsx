@@ -1,10 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { getApiBaseUrl } from "../utils/apiConfig";
 
 export const AuthContext = createContext();
 
 /* ================== GLOBAL AXIOS SETUP ================== */
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL = getApiBaseUrl();
 axios.defaults.withCredentials = true;
 
 /* ======================================================== */

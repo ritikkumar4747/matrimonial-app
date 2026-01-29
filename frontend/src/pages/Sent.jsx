@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../services/api";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { getAssetUrl } from "../utils/apiConfig";
 
 export default function Sent() {
   const [list, setList] = useState([]);
@@ -74,7 +75,7 @@ export default function Sent() {
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-primary-400 to-secondary-500 flex items-center justify-center text-white text-2xl font-bold overflow-hidden">
                   {interest.to.photo ? (
                     <img 
-                      src={`http://localhost:5000${interest.to.photo}`} 
+                      src={getAssetUrl(interest.to.photo)} 
                       alt={interest.to.name}
                       className="w-full h-full object-cover"
                     />
