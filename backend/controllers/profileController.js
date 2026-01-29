@@ -103,11 +103,22 @@ export const getAllProfiles = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 export const uploadPhoto = async (req, res) => {
   try {
-    req.user.photo = `/uploads/${req.file.filename}`;
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    // Cloudinary returns the secure URL in req.file.path
+    req.user.photo = req.file.path;
     await req.user.save();
-    res.json({ photo: req.user.photo });
+    
+    res.json({ 
+      photo: req.user.photo,
+      secure_url: req.file.path,
+      public_id: req.file.filename
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

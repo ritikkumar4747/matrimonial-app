@@ -6,7 +6,7 @@ export const uploadPhoto = async (req, res) => {
 
     const post = await GalleryPost.create({
       user: req.user._id,
-      photo: `/uploads/${req.file.filename}`,
+      photo: req.file.path, // Cloudinary URL
       caption: req.body.caption || ""
     });
 

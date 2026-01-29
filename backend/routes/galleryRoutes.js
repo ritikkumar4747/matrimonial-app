@@ -1,6 +1,6 @@
 import express from "express";
 import protect from "../middleware/authMiddleware.js";
-import upload from "../middleware/uploadMiddleware.js";
+import upload from "../middleware/cloudinaryUpload.js";
 import { uploadPhoto, getMyGallery, getUserGallery, deletePhoto } from "../controllers/galleryController.js";
 
 const router = express.Router();
