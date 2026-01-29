@@ -26,4 +26,3 @@ export const getAssetUrl = (path = "") => {
   // Otherwise, prepend base URL
   return path ? `${API_BASE_URL}${path}` : "";
 };
-export const getAssetUrl = (path = "") => `${API_BASE_URL}${path}`;
