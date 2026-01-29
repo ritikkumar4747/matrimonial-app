@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import axios from "axios";
+import API from "../services/api";
 
 const SmartIcebreakers = ({ matchedUserId }) => {
   const [suggestions, setSuggestions] = useState([]);
@@ -9,17 +9,24 @@ const SmartIcebreakers = ({ matchedUserId }) => {
   const [sent, setSent] = useState(false);
 
   useEffect(() => {
+    if (!matchedUserId) {
+      setSuggestions([]);
+      setLoading(false);
+      return;
+    }
     fetchSuggestions();
   }, [matchedUserId]);
 
   const fetchSuggestions = async () => {
     try {
-      const userId = localStorage.getItem("userId");
-      const response = await axios.get(
-        `/api/icebreakers/suggestions/${userId}?matchedUserId=${matchedUserId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+      const userId = user?._id || user?.id;
+      if (!userId || !matchedUserId) {
+        setSuggestions([]);
+        return;
+      }
+      const response = await API.get(
+        `/icebreakers/suggestions/${userId}?matchedUserId=${matchedUserId}`
       );
       setSuggestions(response.data.suggestions);
     } catch (error) {
@@ -31,28 +38,20 @@ const SmartIcebreakers = ({ matchedUserId }) => {
 
   const handleSendMessage = async (icebreakerMessage) => {
     try {
-      const userId = localStorage.getItem("userId");
-      
       // Send message via chat API
-      await axios.post(
-        `/api/chat/send`,
+      await API.post(
+        `/chat/send`,
         {
           to: matchedUserId,
           message: icebreakerMessage,
-        },
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         }
       );
 
       // Track icebreaker usage
       if (suggestions[selectedIndex]) {
-        await axios.post(
-          `/api/icebreakers/track/${suggestions[selectedIndex]._id}`,
-          { converted: true },
-          {
-            headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-          }
+        await API.post(
+          `/icebreakers/track/${suggestions[selectedIndex]._id}`,
+          { converted: true }
         );
       }
 

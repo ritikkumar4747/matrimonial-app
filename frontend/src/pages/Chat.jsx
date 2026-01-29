@@ -121,22 +121,43 @@ export default function Chat() {
       if (desiredType === "video") {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({
-            audio: { echoCancellation: true, noiseSuppression: true },
-            video: { width: { ideal: 640 }, height: { ideal: 480 } }
+            audio: {
+              echoCancellation: true,
+              noiseSuppression: true,
+              autoGainControl: true,
+              sampleRate: 48000
+            },
+            video: { 
+              width: { ideal: 640 }, 
+              height: { ideal: 480 },
+              facingMode: "user"
+            }
           });
           return { stream, actualType: "video" };
         } catch (videoErr) {
           console.warn("Video failed, falling back to audio:", videoErr.name);
           if (videoErr.name === "NotFoundError" || videoErr.name === "OverconstrainedError" || videoErr.name === "NotAllowedError") {
             setCallStatus("Camera unavailable. Switching to audio...");
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const stream = await navigator.mediaDevices.getUserMedia({
+              audio: {
+                echoCancellation: true,
+                noiseSuppression: true,
+                autoGainControl: true,
+                sampleRate: 48000
+              }
+            });
             return { stream, actualType: "audio" };
           }
           throw videoErr;
         }
       } else {
         const stream = await navigator.mediaDevices.getUserMedia({
-          audio: { echoCancellation: true, noiseSuppression: true },
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true,
+            sampleRate: 48000
+          },
           video: false
         });
         return { stream, actualType: "audio" };
@@ -324,12 +345,17 @@ export default function Chat() {
     };
 
     pc.ontrack = (event) => {
+      console.log("[WebRTC] Received remote track:", event.track.kind);
       if (!remoteStreamRef.current) {
         remoteStreamRef.current = new MediaStream();
       }
       remoteStreamRef.current.addTrack(event.track);
       if (remoteVideoRef.current) {
         remoteVideoRef.current.srcObject = remoteStreamRef.current;
+        // Ensure autoplay works
+        remoteVideoRef.current.play().catch(err => {
+          console.warn("Remote video autoplay failed:", err);
+        });
       }
     };
 
@@ -558,28 +584,34 @@ export default function Chat() {
           </div>
         ) : (
           messages.map((msg) => {
-            const fromMe = msg.sender === undefined ? msg.fromMe : msg.sender !== id;
+            const fromMe = msg.sender === undefined ? msg.fromMe : (msg.sender?._id || msg.sender) === userId;
+            const senderName = fromMe ? "You" : (msg.sender?.name || "Partner");
             return (
               <div
                 key={msg._id || msg.createdAt}
                 className={`flex ${fromMe ? "justify-end" : "justify-start"}`}
               >
-                <div
-                  className={`max-w-xs px-4 py-2 rounded-2xl shadow text-sm ${
-                    fromMe
-                      ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-br-none"
-                      : "bg-white text-gray-700 rounded-bl-none"
-                  }`}
-                >
-                  <p>{msg.text}</p>
-                  <p
-                    className={`text-[10px] mt-1 ${fromMe ? "text-pink-100" : "text-gray-400"} text-right`}
+                <div className="flex flex-col gap-1">
+                  {!fromMe && (
+                    <span className="text-xs text-gray-500 ml-3">{senderName}</span>
+                  )}
+                  <div
+                    className={`max-w-xs px-4 py-2 rounded-2xl shadow text-sm ${
+                      fromMe
+                        ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-br-none"
+                        : "bg-white text-gray-700 rounded-bl-none"
+                    }`}
                   >
-                    {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit"
-                    })}
-                  </p>
+                    <p>{msg.text}</p>
+                    <p
+                      className={`text-[10px] mt-1 ${fromMe ? "text-pink-100" : "text-gray-400"} text-right`}
+                    >
+                      {new Date(msg.createdAt || Date.now()).toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit"
+                      })}
+                    </p>
+                  </div>
                 </div>
               </div>
             );

@@ -19,7 +19,10 @@ export const getMessages = async (req, res) => {
         { sender: req.user._id, receiver: userId },
         { sender: userId, receiver: req.user._id }
       ]
-    }).sort({ createdAt: 1 });
+    })
+    .populate("sender", "name photo")
+    .populate("receiver", "name photo")
+    .sort({ createdAt: 1 });
 
     res.json(messages);
   } catch (err) {
@@ -29,18 +32,23 @@ export const getMessages = async (req, res) => {
 
 export const sendMessage = async (req, res) => {
   try {
-    const { receiver, text } = req.body;
+    const { receiver, text, to } = req.body;
+    const receiverId = receiver || to;
 
-    const allowed = await ensureMutualAccepted(req.user._id, receiver);
+    const allowed = await ensureMutualAccepted(req.user._id, receiverId);
     if (!allowed) return res.status(403).json({ message: "Chat available only after mutual acceptance" });
 
     const message = await Message.create({
       sender: req.user._id,
-      receiver,
+      receiver: receiverId,
       text
     });
 
-    res.status(201).json(message);
+    const populated = await Message.findById(message._id)
+      .populate("sender", "name photo")
+      .populate("receiver", "name photo");
+
+    res.status(201).json(populated);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
