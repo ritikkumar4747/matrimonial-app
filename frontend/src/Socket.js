@@ -7,7 +7,7 @@ console.log(`[Socket] Connecting to: ${BACKEND_URL}`);
 
 const socket = io(BACKEND_URL, {
 	withCredentials: true,
-	transports: ["websocket", "polling"],
+	transports: ["polling", "websocket"],
 	autoConnect: true,
 	reconnection: true,
 	reconnectionAttempts: 10,

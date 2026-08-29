@@ -8,10 +8,10 @@ const fallbackBaseUrl = isLocalhost
   : "https://matrimonial-app-pu7b.onrender.com";
 
 const envBaseUrl = typeof import.meta !== "undefined" && import.meta.env
-  ? import.meta.env.VITE_API_URL
+  ? (import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || import.meta.env.VITE_SERVER_URL)
   : undefined;
 
-const normalizeBase = (url) => (url ? url.replace(/\/+$/, "") : "");
+const normalizeBase = (url) => (url ? String(url).trim().replace(/\/+$/, "") : "");
 
 const API_BASE_URL = normalizeBase(envBaseUrl || fallbackBaseUrl);
 

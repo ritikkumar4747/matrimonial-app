@@ -24,41 +24,66 @@ connectDB();
 
 const app = express();
 
-// CORS configuration - support both local and production
-// Set ALLOW_ALL_ORIGINS=true in your Render env for temporary testing (not for production)
+// Helper to normalize URLs (strip trailing slashes and whitespace)
+const cleanUrl = (url) => (url ? String(url).trim().replace(/\/+$/, "") : "");
+
 const allowAllOrigins = process.env.ALLOW_ALL_ORIGINS === "true";
-const allowedOrigins = [
+const rawFrontendUrl = process.env.FRONTEND_URL;
+const rawFrontendUrls = process.env.FRONTEND_URLS;
+
+const configuredOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
+  "http://localhost:5174",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5174",
   "https://matrimonialapp.vercel.app",
-  process.env.FRONTEND_URL, // Set in production: https://your-app.vercel.app
-  ...(process.env.FRONTEND_URLS
-    ? process.env.FRONTEND_URLS.split(",").map((url) => url.trim()).filter(Boolean)
-    : [])
+  cleanUrl(rawFrontendUrl),
+  ...(rawFrontendUrls ? rawFrontendUrls.split(",").map(cleanUrl) : [])
 ].filter(Boolean);
 
 const isOriginAllowed = (origin) => {
-  if (!origin) return true; // allow same-origin / server-to-server requests
-  if (allowAllOrigins) return true;
-  return allowedOrigins.includes(origin);
+  if (!origin) return true; // Allow requests with no origin (Postman, server-to-server, mobile)
+
+  const normalized = cleanUrl(origin);
+
+  if (allowAllOrigins || rawFrontendUrl === "*") return true;
+
+  if (configuredOrigins.includes(normalized)) return true;
+
+  // Dynamically match any Vercel domain (*.vercel.app)
+  try {
+    const urlObj = new URL(normalized);
+    if (urlObj.hostname.endsWith(".vercel.app") || urlObj.hostname === "vercel.app") {
+      return true;
+    }
+  } catch (e) {
+    // ignore invalid URL format
+  }
+
+  return false;
 };
 
-console.log("[CORS] allowedOrigins:", allowedOrigins, "ALLOW_ALL_ORIGINS=", allowAllOrigins);
+console.log("[CORS] Configured origins:", configuredOrigins, "ALLOW_ALL_ORIGINS=", allowAllOrigins);
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      console.log("[CORS] incoming origin:", origin);
-      if (isOriginAllowed(origin)) {
-        callback(null, true);
-      } else {
-        console.warn("[CORS] blocked origin:", origin);
-        callback(new Error("CORS not allowed"));
-      }
-    },
-    credentials: true
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    console.log("[CORS] incoming origin:", origin);
+    if (isOriginAllowed(origin)) {
+      callback(null, true);
+    } else {
+      console.warn("[CORS] blocked origin:", origin);
+      callback(null, false);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"]
+};
+
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 
 const __filename = fileURLToPath(import.meta.url);
@@ -92,10 +117,11 @@ const io = new Server(server, {
         callback(null, true);
       } else {
         console.warn("[CORS][Socket] blocked origin:", origin);
-        callback(new Error("CORS not allowed"));
+        callback(null, false);
       }
     },
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST"]
   }
 });
 
