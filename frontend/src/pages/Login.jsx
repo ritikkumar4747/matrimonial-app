@@ -41,14 +41,21 @@ export default function Login() {
           required
         />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full px-4 py-3 border rounded-xl"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <div>
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-3 border rounded-xl"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <div className="text-right mt-1.5">
+            <Link to="/forgot-password" className="text-xs text-pink-500 hover:underline">
+              Forgot password?
+            </Link>
+          </div>
+        </div>
 
         <button className="w-full py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold">
           Login

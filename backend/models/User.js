@@ -76,7 +76,11 @@ const userSchema = new mongoose.Schema(
     isPremium: {
       type: Boolean,
       default: false
-    }
+    },
+
+    // Password Reset
+    resetPasswordCode: String,
+    resetPasswordExpires: Date
   },
   { timestamps: true }
 );
