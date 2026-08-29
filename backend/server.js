@@ -25,22 +25,34 @@ connectDB();
 const app = express();
 
 // CORS configuration - support both local and production
+// Set ALLOW_ALL_ORIGINS=true in your Render env for temporary testing (not for production)
+const allowAllOrigins = process.env.ALLOW_ALL_ORIGINS === "true";
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
-  
+  "https://matrimonialapp.vercel.app",
   process.env.FRONTEND_URL, // Set in production: https://your-app.vercel.app
   ...(process.env.FRONTEND_URLS
     ? process.env.FRONTEND_URLS.split(",").map((url) => url.trim()).filter(Boolean)
     : [])
 ].filter(Boolean);
 
+const isOriginAllowed = (origin) => {
+  if (!origin) return true; // allow same-origin / server-to-server requests
+  if (allowAllOrigins) return true;
+  return allowedOrigins.includes(origin);
+};
+
+console.log("[CORS] allowedOrigins:", allowedOrigins, "ALLOW_ALL_ORIGINS=", allowAllOrigins);
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      console.log("[CORS] incoming origin:", origin);
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
+        console.warn("[CORS] blocked origin:", origin);
         callback(new Error("CORS not allowed"));
       }
     },
@@ -75,9 +87,11 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      console.log("[CORS][Socket] incoming origin:", origin);
+      if (isOriginAllowed(origin)) {
         callback(null, true);
       } else {
+        console.warn("[CORS][Socket] blocked origin:", origin);
         callback(new Error("CORS not allowed"));
       }
     },
