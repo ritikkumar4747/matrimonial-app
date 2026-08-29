@@ -5,7 +5,7 @@ const isLocalhost = typeof window !== "undefined" &&
 
 const fallbackBaseUrl = isLocalhost
   ? "http://localhost:5000"
-  : "https://matrimonial-app-production-d5ac.up.railway.app";
+  : "https://matrimonial-app-pu7b.onrender.com";
 
 const envBaseUrl = typeof import.meta !== "undefined" && import.meta.env
   ? import.meta.env.VITE_API_URL
