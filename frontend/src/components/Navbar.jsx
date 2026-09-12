@@ -50,9 +50,14 @@ export default function Navbar() {
             className="flex items-center gap-2.5 group"
           >
             <div className="text-3xl transform group-hover:scale-110 transition-transform">💕</div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-600 bg-clip-text text-transparent tracking-tight">
-              MatrioMoney
-            </span>
+            <div className="flex flex-col">
+              <span className="text-2xl font-black tracking-tight text-gray-900 leading-tight">
+                Matri<span className="bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 bg-clip-text text-transparent">monial</span>
+              </span>
+              <span className="text-[10px] font-bold text-gray-400 tracking-widest uppercase">
+                Rabb Ne Bana Di Jodi
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

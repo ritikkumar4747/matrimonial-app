@@ -63,7 +63,7 @@ export default function Footer() {
           {/* Brand Section */}
           <motion.div variants={itemVariants}>
             <h3 className="text-white text-2xl font-bold mb-4">
-              💕 MatrioMoney
+              💕 Matrimonial
             </h3>
             <p className="text-sm text-gray-400 leading-relaxed mb-6">
               A trusted matrimonial platform engineered for meaningful connections and lifelong companionship. Verified profiles, secure communication, and real-time calling.
@@ -210,7 +210,10 @@ export default function Footer() {
           viewport={{ once: true }}
         >
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
-            <p>© {new Date().getFullYear()} MatrioMoney. All rights reserved. 💑</p>
+            <div>
+              <p>© {new Date().getFullYear()} Matrimonial. All rights reserved. 💑</p>
+              <p className="mt-1 text-xs text-gray-500">Rabb Ne Bana Di Jodi — Finding your perfect soulmate</p>
+            </div>
             <div className="flex gap-6 text-xs">
               <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
               <a href="#terms" className="hover:text-white transition-colors">Terms of Service</a>

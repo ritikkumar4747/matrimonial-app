@@ -1,337 +1,283 @@
-# 💍 MatrioMoney — Modern Matrimonial & Matchmaking Platform
+# 💍 Matrimonial — Modern Matchmaking Platform
+> **Tagline:** *Rabb Ne Bana Di Jodi — A Match Made in Heaven*
 
-[![Node.js](https://img.shields.io/badge/Node.js-v20+-green.svg)](https://nodejs.org/)
-[![Express](https://img.shields.io/badge/Express-v4-lightgrey.svg)](https://expressjs.com/)
-[![React](https://img.shields.io/badge/React-v18-blue.svg)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-v6-purple.svg)](https://vitejs.dev/)
-[![TailwindCSS](https://img.shields.io/badge/TailwindCSS-v3-38bdf8.svg)](https://tailwindcss.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-brightgreen.svg)](https://www.mongodb.com/)
-[![Socket.io](https://img.shields.io/badge/Socket.io-v4-black.svg)](https://socket.io/)
-[![WebRTC](https://img.shields.io/badge/WebRTC-P2P%20Video%20%26%20Audio-orange.svg)](https://webrtc.org/)
-[![Vercel](https://img.shields.io/badge/Frontend-Vercel-black.svg)](https://vercel.com/)
-[![Render](https://img.shields.io/badge/Backend-Render-46E3B7.svg)](https://render.com/)
+[![React](https://img.shields.io/badge/React-18.3-61dafb.svg?logo=react&logoColor=white)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-v20+-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.19-000000.svg?logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248.svg?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Socket.io](https://img.shields.io/badge/Socket.io-4.8-010101.svg?logo=socket.io&logoColor=white)](https://socket.io/)
+[![WebRTC](https://img.shields.io/badge/WebRTC-P2P%20Calling-333333.svg?logo=webrtc&logoColor=white)](https://webrtc.org/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Media%20CDN-3448C5.svg?logo=cloudinary&logoColor=white)](https://cloudinary.com/)
+[![Vercel](https://img.shields.io/badge/Frontend-Vercel-black.svg?logo=vercel&logoColor=white)](https://vercel.com/)
+[![Render](https://img.shields.io/badge/Backend-Render-46E3B7.svg?logo=render&logoColor=white)](https://render.com/)
 
-A modern, full-stack matchmaking and matrimonial platform designed to connect compatible partners. Engineered with a **React 18 / Vite / Tailwind CSS** frontend and an **Express / MongoDB / Socket.io / WebRTC** backend. Features real-time bidirectional messaging, peer-to-peer audio and video calling with STUN signaling, deterministic compatibility scoring, mutual interest gating, private photo galleries, and production deployment on Vercel and Render.
+A modern, full-stack matrimonial and matchmaking platform built for authentic connections and lifelong companionship. Designed with a **React 18 / Vite / Tailwind CSS** frontend and an **Express / Node.js / MongoDB / Socket.io / WebRTC** backend.
 
 ---
 
 ## 🌐 Live Deployments
 
-- **Frontend (Vercel SPA)**: [https://matrimonialapp.vercel.app](https://matrimonialapp.vercel.app)
-- **Backend API (Render Web Service)**: [https://matrimonial-app-pu7b.onrender.com](https://matrimonial-app-pu7b.onrender.com)
+| Component | Platform | Live URL |
+| :--- | :--- | :--- |
+| **Frontend Application** | Vercel (Edge SPA) | [https://matrimonialapp.vercel.app](https://matrimonialapp.vercel.app) |
+| **Backend API & WebSockets** | Render (Web Service) | [https://matrimonial-app-pu7b.onrender.com](https://matrimonial-app-pu7b.onrender.com) |
+| **Source Code** | GitHub | [https://github.com/ritikkumar4747/matrimonial-app](https://github.com/ritikkumar4747/matrimonial-app) |
 
 ---
 
-## 📑 Table of Contents
+## 🏛️ System Architecture
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [System Architecture](#-system-architecture)
-- [Real-Time & WebRTC Communication](#-real-time--webrtc-communication)
-- [Repository Structure](#-repository-structure)
-- [Environment Variables](#-environment-variables)
-- [Quick Start (Local Development)](#-quick-start-local-development)
-- [API Reference](#-api-reference)
-- [Production Deployment Guide](#-production-deployment-guide)
-  - [Frontend Deployment (Vercel)](#frontend-deployment-vercel)
-  - [Backend Deployment (Render)](#backend-deployment-render)
-- [Security & Engineering Practices](#-security--engineering-practices)
+The application is structured into four decoupled layers for high availability, security, and low-latency communication:
 
----
-
-## ✨ Features
-
-### 🔐 Authentication & Account Management
-- **Secure Authentication**: User registration, bcrypt password hashing (10 salt rounds), and JSON Web Token (JWT) authorization with 7-day expiration.
-- **Auto-Login on Registration**: Automatic token storage and instant redirection upon creating an account.
-- **Forgot Password Workflow**: 6-digit cryptographic verification code generation with 15-minute expiration for password recovery.
-- **Protected Routes**: Client-side authentication wrappers (PrivateRoute) enforcing login before accessing dashboard or personal matches.
-
-### 🎯 Smart Matchmaking & Compatibility
-- **Deterministic Match Scoring**: Multi-factor scoring algorithm calculating compatibility percentage based on:
-  - Age preference alignment
-  - Religious and caste preferences
-  - Educational background and profession
-  - Geographic location (city and state)
-  - Shared hobbies and lifestyle compatibility
-- **Multi-Filter Discovery**: Browse profiles by gender, location, religion, education, age range, height, marital status, and sort by match score, recency, or profile views.
-
-### 💬 Real-Time Messaging & WebRTC Calling
-- **Mutual Interest Gating**: Privacy-first design where private chat and photo galleries are unlocked **only** after both users mutually express and accept interest.
-- **Instant Chat**: Socket.io bidirectional communication with instant message delivery and message persistence in MongoDB.
-- **P2P Video & Voice Calling**: Peer-to-peer audio and video calls powered by the WebRTC RTCPeerConnection API.
-  - WebSocket signaling for call offers, answers, rejection, and ICE candidate exchange (call:offer, call:answer, call:ice, call:reject, call:end).
-  - Google Public STUN servers (stun:stun.l.google.com:19302) for reliable NAT traversal.
-  - Automatic graceful fallback to audio if camera permissions are unavailable.
-
-### 💖 Daily Discovery & Interactions
-- **Daily Match Card**: Curated daily top match recommendation with single-action swipe/pass interaction.
-- **Interest Requests**: Send, view sent, and manage incoming interest requests (Accept / Decline).
-- **Mutual Matches Hub**: Dedicated view showing all reciprocated connections ready for chat and video calls.
-
-### 📸 Media, Stories & Photo Gallery
-- **Ephemeral 24-Hour Stories**: Users can share 24-hour photo/video stories with views tracking, automatically purged after 24 hours using MongoDB TTL indexes.
-- **Cloudinary CDN Integration**: High-speed, responsive image processing and storage via Cloudinary and Multer.
-- **Private Mutual Gallery**: Users can post photos with captions; mutually matched partners can view, like, and appreciate gallery posts.
-
-### 🏆 Gamification & Trust
-- **Profile Strength Meter**: Dynamic completion tracker offering actionable tips to complete profile details and reach 100%.
-- **Achievement Badges**: Automated badges for verified profiles, first match, popular profiles, and active messaging streaks.
-- **Success Stories**: Read and share verified real-world couple success stories.
-
----
-
-## 🛠 Tech Stack
-
-| Layer | Technology | Description |
-|---|---|---|
-| **Frontend** | React 18, Vite 6, React Router 6 | Component-driven SPA with fast HMR |
-| **Styling** | Tailwind CSS 3, Framer Motion | Modern responsive UI, micro-animations, particles |
-| **Real-Time & P2P** | Socket.io Client, WebRTC | WebSocket messaging, RTCPeerConnection audio/video |
-| **HTTP Client** | Axios | Interceptors for Bearer JWT authorization |
-| **Backend Runtime** | Node.js (v18+ / v20 LTS), Express 4 | Modular ES Modules (import/export) REST API |
-| **Database** | MongoDB Atlas with Mongoose 8 | Indexed collections with retry-resilient connection |
-| **Media Storage** | Cloudinary & Multer | Cloud-based image upload and CDN delivery |
-| **Hosting & CI/CD** | Vercel (Frontend), Render (Backend) | Automated Git-triggered cloud deployments |
-
----
-
-## 🏛 System Architecture
-
-`
-                      ┌────────────────────────────┐
-                      │    Client (Web Browser)    │
-                      └──────────────┬─────────────┘
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           CLIENT LAYER (Browser)                        │
+│   • React 18 SPA (Vite)    • Tailwind CSS & Framer Motion Animations    │
+│   • WebRTC Media Engine    • Socket.io Client (Real-Time Messaging)     │
+└────────────────────────────────────┬────────────────────────────────────┘
                                      │ HTTPS / WSS
-                      ┌──────────────▼─────────────┐
-                      │   Edge Router / CDN        │
-                      └──────────────┬─────────────┘
-                                     │
-            ┌────────────────────────┴────────────────────────┐
-            ▼                                                 ▼
-┌────────────────────────┐                       ┌─────────────────────────┐
-│   Frontend (SPA)       │                       │   Backend API (Express) │
-│   Vercel Edge Network  │                       │   Render Web Service    │
-│   Port: 5173 / 443     │                       │   Port: 5000            │
-└────────────────────────┘                       └────────────┬────────────┘
-                                                              │
-                     ┌───────────────────────┬────────────────┴───────────────────────┐
-                     ▼                       ▼                                        ▼
-          ┌─────────────────────┐ ┌──────────────────────┐               ┌───────────────────────┐
-          │   MongoDB Atlas     │ │ Socket.io & WebRTC   │               │ Cloudinary Media CDN  │
-          │   (Mongoose Models) │ │ Signaling Gateway    │               │ (Profiles & Gallery)  │
-          └─────────────────────┘ └──────────────────────┘               └───────────────────────┘
-`
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      APPLICATION & SIGNALING LAYER                      │
+│                 Node.js + Express REST API (Hosted on Render)           │
+│                                                                         │
+│   [Auth Controller]   [Profile Engine]   [Interest Matcher]  [Chat API] │
+│   [Story Service]     [Badges / Streak]  [Cloudinary Upload] [WebRTC]   │
+│   ───────────────────────────────────────────────────────────────────   │
+│   • JWT Auth Guard Middleware           • CORS Policy Engine            │
+│   • Socket.io WebSocket Hub (Signaling: offer, answer, ice candidate)   │
+└──────────────┬─────────────────────────┬────────────────────────┬───────┘
+               │                         │                        │
+               ▼                         ▼                        ▼
+┌───────────────────────────┐ ┌───────────────────────┐ ┌─────────────────┐
+│       DATABASE LAYER      │ │      MEDIA LAYER      │ │   P2P CALLING   │
+│       MongoDB Atlas       │ │     Cloudinary CDN    │ │  Google STUN    │
+│  • Users & Profiles       │ │  • Profile Photos     │ │  (NAT Traversal │
+│  • Interests & Matches    │ │  • Mutual Galleries   │ │   Peer-to-Peer  │
+│  • Messages & History     │ │  • 24h Ephemeral      │ │   Media Stream) │
+│  • 24h TTL Stories        │ │    Media Delivery     │ │                 │
+└───────────────────────────┘ └───────────────────────┘ └─────────────────┘
+```
 
 ---
 
-## 📡 Real-Time & WebRTC Communication
+## 🔄 Matchmaking & Calling Flow
 
-WebRTC establishes an encrypted direct peer-to-peer connection for voice and video calling between two mutually accepted users, using the Socket.io server exclusively for SDP offer/answer exchange and ICE candidate relay:
+Here is how the end-to-end user lifecycle works in simple steps:
 
-`
-User A (Caller)                     Socket.io Server                     User B (Callee)
-      │                                    │                                    │
-      │─── 1. call:offer (SDP Offer) ─────>│─── 2. Relay call:offer ───────────>│
-      │                                    │                                    │ (Rings UI)
-      │<── 4. Relay call:answer ───────────│<── 3. call:answer (SDP Answer) ────│ (Accepts)
-      │                                    │                                    │
-      │─── 5. call:ice (ICE Candidates) ──>│─── 6. Relay call:ice ─────────────>│
-      │<── 8. Relay call:ice ──────────────│<── 7. call:ice (ICE Candidates) ───│
-      │                                    │                                    │
-      ▼═════════════════════════════════════════════════════════════════════════▼
-             Direct Encrypted P2P Media Stream (Audio / Video via STUN)
-`
+```
+  [ 1. REGISTER / LOGIN ]
+            │
+            ▼
+  [ 2. COMPLETE PROFILE ] ──▶ Set religion, caste, city, age, lifestyle & preferences
+            │
+            ▼
+  [ 3. DISCOVER MATCHES ] ──▶ Multi-filter search & deterministic compatibility score (0-100%)
+            │
+            ▼
+  [ 4. EXPRESS INTEREST ] ──▶ User A clicks "Send Interest" (Status: Pending)
+            │
+            ▼
+  [ 5. MUTUAL ACCEPTANCE] ──▶ User B accepts interest ──▶ Unlocks "Mutual Matches" feed
+            │
+            ├─────────────────────────────────────────┐
+            ▼                                         ▼
+  [ 6. REAL-TIME CHAT ]                     [ 7. WebRTC P2P CALL ]
+  Instant bidirectional messaging           Private HD video/voice call
+  via Socket.io with zero polling           using direct peer-to-peer stream
+```
+
+---
+
+## 📞 WebRTC Audio & Video Calling Architecture
+
+WebRTC creates a **direct, peer-to-peer encrypted connection** between two mutually matched users. Socket.io serves as the signaling bridge to exchange connection metadata:
+
+```
+User A (Caller)                   Signaling Server (Socket.io)                 User B (Callee)
+      │                                       │                                       │
+      │─── 1. call:offer (SDP Offer) ────────>│─── 2. Relay call:offer ──────────────>│
+      │                                       │                                       │ (Incoming Ring)
+      │<── 4. Relay call:answer ──────────────│<── 3. call:answer (SDP Answer) ───────│ (Accepts Call)
+      │                                       │                                       │
+      │─── 5. call:ice (ICE Candidates) ─────>│─── 6. Relay call:ice ────────────────>│
+      │<── 8. Relay call:ice ─────────────────│<── 7. call:ice (ICE Candidates) ──────│
+      │                                       │                                       │
+      ▼═══════════════════════════════════════════════════════════════════════════════▼
+                 DIRECT ENCRYPTED PEER-TO-PEER MEDIA STREAM (Audio & Video)
+                      Google STUN: stun:stun.l.google.com:19302
+```
+
+1. **Offer / Answer Exchange**: Caller creates an SDP offer; callee accepts and sends an SDP answer via WebSocket.
+2. **ICE Candidates & NAT Traversal**: Both peers query Google's public STUN server (`stun:stun.l.google.com:19302`) to discover their public IP and port, routing directly through firewalls and NATs.
+3. **Encrypted Media Stream**: Once connected, audio and video streams flow directly peer-to-peer with zero server bandwidth overhead.
+
+---
+
+## ✨ Key Features
+
+### 🔐 1. Authentication & Security
+- **JWT Stateless Authentication**: 7-day signed tokens stored in client storage with Axios authorization interceptors.
+- **Password Security**: Salted hashing with `bcryptjs` (10 rounds).
+- **Auto-Login**: Registration instantly generates a JWT session and navigates directly to the dashboard.
+- **Route Guarding**: Protected routes verify tokens and guard private dashboard views.
+
+### 🎯 2. Intelligent Matchmaking
+- **Deterministic Compatibility Scoring**: Evaluates age, religion, caste, education, location, and lifestyle alignment.
+- **Multi-Attribute Filters**: Filter by gender, location, religion, caste, age range, and profession.
+- **Connection Workflow**: Three-state connection state machine (`Pending` $\rightarrow$ `Accepted` / `Rejected`).
+- **Mutual Matches Hub**: Dedicated inbox showing only reciprocated connections.
+
+### 💬 3. Communication & Media
+- **Real-Time Messaging**: Socket.io instant messaging with zero-polling screen refreshes and persistent MongoDB message storage.
+- **WebRTC Calling**: Peer-to-peer HD video and crystal audio calling with incoming/outgoing ringtones.
+- **Ephemeral 24-Hour Stories**: Stories automatically evicted after 24 hours using MongoDB's native **TTL index** (`expires: 86400`).
+- **Cloudinary Photo Gallery**: Responsive cloud storage and CDN delivery for profile pictures and mutual galleries.
+
+### 🏆 4. Gamification & Community
+- **Profile Strength Meter**: Real-time progress bar guiding users to complete their bio, photos, and preferences.
+- **Achievement Badges**: Automated badges for verified members, first match, popular profiles, and active streaks.
+- **Success Stories**: Inspiring real-world community testimonials.
+
+---
+
+## 🛠️ Tech Stack
+
+| Domain | Technologies |
+| :--- | :--- |
+| **Frontend** | React 18, Vite 6, React Router 6, Axios |
+| **UI & Styling** | Tailwind CSS 3, Framer Motion, `@tsparticles/react` |
+| **Backend** | Node.js (v20 LTS), Express.js (ES Modules) |
+| **Real-Time & P2P** | Socket.io (v4), WebRTC (`RTCPeerConnection`), Google STUN |
+| **Database** | MongoDB Atlas, Mongoose 8 (with TTL Indexes) |
+| **Media & Storage** | Cloudinary CDN, Multer, Multer-Storage-Cloudinary |
+| **Security** | JSON Web Tokens (JWT), `bcryptjs`, CORS Policy Engine |
+| **Deployments** | Vercel (Frontend SPA), Render (Backend Web Service) |
 
 ---
 
 ## 📁 Repository Structure
 
-`	ext
+```
 matrimonial/
 ├── backend/
-│   ├── config/             # Database connection with retry logic (db.js)
+│   ├── config/             # Database connection with auto-retry (db.js)
 │   ├── controllers/        # Business logic (auth, profile, chat, interest, gallery)
-│   ├── middleware/         # JWT auth guard (authMiddleware.js), Multer upload
-│   ├── models/             # Mongoose schemas (User, Message, Interest, GalleryPost, etc.)
-│   ├── routes/             # REST endpoints (auth, profile, chat, dailyMatch, badges)
-│   ├── utils/              # Match score calculator, profile strength algorithm
-│   ├── server.js           # Express app, CORS configuration, Socket.io & WebRTC signaling
-│   ├── package.json
-│   └── .env.example        # Backend environment template
+│   ├── middleware/         # JWT auth guard (authMiddleware.js), Cloudinary upload
+│   ├── models/             # Mongoose schemas (User, Message, Interest, Story, etc.)
+│   ├── routes/             # REST endpoints (auth, profile, chat, stories, badges)
+│   ├── utils/              # Match score calculation & daily streak logic
+│   ├── server.js           # Express app, Socket.io signaling & WebRTC gateway
+│   ├── .env.example        # Backend environment template
+│   └── package.json
 │
 ├── frontend/
-│   ├── public/             # Static assets
 │   ├── src/
-│   │   ├── assets/         # Icons and SVG graphics
-│   │   ├── components/     # UI components (Navbar, Footer, Backgrounds, Badges)
-│   │   ├── context/        # Auth context provider & global Axios setup
-│   │   ├── layouts/        # PrivateLayout and PublicLayout wrappers
-│   │   ├── pages/          # App views (Home, Login, Register, Matches, Chat, etc.)
-│   │   ├── routes/         # PrivateRoute and PublicRoute guards
-│   │   ├── services/       # Axios API client with Bearer interceptors
-│   │   ├── utils/          # Dynamic API & Socket URL resolver
-│   │   ├── App.jsx         # Route declarations
-│   │   └── main.jsx        # Client entrypoint
-│   ├── vercel.json         # Vercel SPA routing rewrites
-│   ├── package.json
-│   └── .env.example        # Frontend environment template
+│   │   ├── components/     # UI components (Navbar, Footer, Badges, CallModal)
+│   │   ├── context/        # Global AuthContext & state providers
+│   │   ├── pages/          # Views (Home, Dashboard, Matches, MutualMatches, Chat)
+│   │   ├── services/       # Axios API client with Bearer token interceptor
+│   │   ├── Socket.js       # Central Socket.io singleton instance
+│   │   ├── App.jsx         # Client-side routing configuration
+│   │   └── main.jsx        # React application root entry point
+│   ├── .env.example        # Frontend environment template
+│   ├── vite.config.js      # Vite build configuration
+│   └── package.json
 │
 └── README.md
-`
-
----
-
-## 🔐 Environment Variables
-
-### Backend (ackend/.env)
-
-| Variable | Description | Example / Default |
-|---|---|---|
-| PORT | Server listening port | 5000 |
-| NODE_ENV | Runtime environment | development or production |
-| MONGO_URI | MongoDB Atlas connection string | mongodb+srv://user:pass@cluster.mongodb.net/matrimonial |
-| JWT_SECRET | Secret key for signing authorization tokens | your_jwt_secret_key |
-| FRONTEND_URL | Primary allowed frontend origin for CORS | https://matrimonialapp.vercel.app |
-| FRONTEND_URLS | Comma-delimited list of allowed frontend origins | http://localhost:5173,https://matrimonialapp.vercel.app |
-| ALLOW_ALL_ORIGINS | Enable all CORS origins (optional) | alse |
-| CLOUDINARY_CLOUD_NAME | Cloudinary cloud account name | your_cloud_name |
-| CLOUDINARY_API_KEY | Cloudinary API access key | your_api_key |
-| CLOUDINARY_API_SECRET | Cloudinary API access secret | your_api_secret |
-
-### Frontend (rontend/.env)
-
-| Variable | Description | Example / Default |
-|---|---|---|
-| VITE_BACKEND_URL | Base URL of deployed/local backend API | https://matrimonial-app-pu7b.onrender.com |
+```
 
 ---
 
 ## 🚀 Quick Start (Local Development)
 
 ### Prerequisites
-- **Node.js** (v18.0.0 or higher)
-- **npm** (v9.0.0 or higher)
-- **MongoDB** (Local instance or MongoDB Atlas cluster URI)
+- Node.js (v18 or v20 LTS)
+- MongoDB database (local or free MongoDB Atlas cluster)
+- Cloudinary account (for image uploads)
 
 ### 1. Clone the Repository
-`ash
+```bash
 git clone https://github.com/ritikkumar4747/matrimonial-app.git
 cd matrimonial-app
-`
+```
 
 ### 2. Backend Setup
-`ash
+```bash
 cd backend
 npm install
 cp .env.example .env
-# Edit .env with your MONGO_URI, JWT_SECRET, and Cloudinary keys
+# Fill in your MONGO_URI, JWT_SECRET, and Cloudinary keys in .env
 npm run dev
-`
-*Backend runs on http://localhost:5000.*
+```
+*Backend runs on `http://localhost:5000`.*
 
 ### 3. Frontend Setup
-`ash
+```bash
 cd ../frontend
 npm install
 cp .env.example .env
-# Set VITE_BACKEND_URL=http://localhost:5000 for local development
+# Set VITE_BACKEND_URL=http://localhost:5000 in .env
 npm run dev
-`
-*Frontend runs on http://localhost:5173.*
+```
+*Frontend runs on `http://localhost:5173`.*
 
 ---
 
-## 📡 API Reference
+## 📡 REST API Reference
 
-### Authentication
-- POST /api/auth/register — Register a new user account (returns JWT token & user object)
-- POST /api/auth/login — Authenticate existing user and receive JWT token
-- POST /api/auth/forgot-password — Generate 6-digit recovery code (15 min validity)
-- POST /api/auth/reset-password — Verify code and update password
+### 🔐 Authentication (`/api/auth`)
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/auth/register` | Register account (returns JWT token & user object) | Public |
+| `POST` | `/api/auth/login` | Log in and receive JWT token | Public |
+| `POST` | `/api/auth/forgot-password` | Generate 6-digit recovery code | Public |
+| `POST` | `/api/auth/reset-password` | Reset password using recovery code | Public |
+| `GET` | `/api/auth/me` | Fetch authenticated user payload | 🔒 Bearer |
 
-### Profiles & Compatibility
-- GET /api/profile/me — Retrieve authenticated user profile [Protected]
-- PUT /api/profile — Update user profile details & partner preferences [Protected]
-- GET /api/profile/all — Search and filter profiles with calculated match scores [Protected]
-- GET /api/profile/:id — View specific user profile [Protected]
+### 👤 Profiles (`/api/profile`)
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/profile/me` | Retrieve profile of authenticated user | 🔒 Bearer |
+| `PUT` | `/api/profile/update` | Update profile information & preferences | 🔒 Bearer |
+| `GET` | `/api/profile/all` | Search and list profiles with match scores | 🔒 Bearer |
+| `GET` | `/api/profile/recommended`| Fetch top calculated recommendations | 🔒 Bearer |
+| `GET` | `/api/profile/:userId` | View public profile of a user | 🔒 Bearer |
+| `POST` | `/api/profile/photo` | Upload profile photo to Cloudinary | 🔒 Bearer |
 
-### Interactions & Mutual Matching
-- POST /api/interest/send — Send interest request to target user [Protected]
-- GET /api/interest/received — View pending received interest requests [Protected]
-- GET /api/interest/sent — View all sent interest requests [Protected]
-- PUT /api/interest/status/:id — Accept or decline an interest request [Protected]
-- GET /api/interest/mutual — Retrieve all mutually accepted matches [Protected]
-- GET /api/interest/status/:userId — Check connection status with specific user [Protected]
+### 💖 Interests & Matching (`/api/interest`)
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :---: |
+| `POST` | `/api/interest/send` | Send interest request (`toUserId`) | 🔒 Bearer |
+| `GET` | `/api/interest/received`| Fetch incoming pending interest requests | 🔒 Bearer |
+| `GET` | `/api/interest/sent` | Fetch sent interest requests | 🔒 Bearer |
+| `PUT` | `/api/interest/:id` | Accept or reject an interest request | 🔒 Bearer |
+| `GET` | `/api/interest/mutual` | Retrieve all mutual matches | 🔒 Bearer |
 
-### Real-Time Chat & History
-- GET /api/chat/:userId — Retrieve message history (requires mutual acceptance) [Protected]
-- POST /api/chat/send — Send and persist a new message [Protected]
+### 💬 Chat & Messages (`/api/chat`)
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/chat/:userId` | Get chat history between mutual matches | 🔒 Bearer |
+| `POST` | `/api/chat/send` | Send and persist chat message | 🔒 Bearer |
 
-### Ephemeral Stories (24-Hour TTL)
-- GET /api/stories — Fetch active 24-hour stories from network [Protected]
-- POST /api/stories — Upload a 24-hour photo/video story via Cloudinary [Protected]
-- POST /api/stories/:id/view — Record viewer and increment story view count [Protected]
-
-### Photo Gallery
-- POST /api/gallery/upload — Upload photo with caption via Multer & Cloudinary [Protected]
-- GET /api/gallery/my — Fetch authenticated user gallery photos [Protected]
-- GET /api/gallery/user/:userId — Fetch gallery photos of mutually matched user [Protected]
-- DELETE /api/gallery/:postId — Delete an uploaded photo [Protected]
-
-### Gamification & Daily Matches
-- GET /api/daily-match/daily-match/:userId — Get curated daily recommendation [Protected]
-- POST /api/daily-match/daily-match/:userId/swipe — Submit swipe (like / pass) [Protected]
-- GET /api/daily-match/daily-match/:userId/stats — Retrieve 30-day swipe statistics [Protected]
-- GET /api/badges/:userId — Get unlocked user badges [Protected]
-- GET /api/badges/:userId/progress — Get progress metrics toward unlocking badges [Protected]
-- GET /api/profile-strength/:userId — Get detailed profile completion breakdown [Protected]
+### 📸 Ephemeral Stories (`/api/stories`)
+| Method | Endpoint | Description | Auth |
+| :--- | :--- | :--- | :---: |
+| `GET` | `/api/stories` | Fetch active 24-hour stories | 🔒 Bearer |
+| `POST` | `/api/stories` | Upload a 24-hour story (auto-purged by TTL) | 🔒 Bearer |
+| `POST` | `/api/stories/:id/view` | Mark story as viewed | 🔒 Bearer |
 
 ---
 
-## 🚢 Production Deployment Guide
+## 🛡️ Security & Engineering Best Practices
 
-### Frontend Deployment (Vercel)
-The frontend is configured for seamless deployment on Vercel:
-1. Connect your GitHub repository to Vercel.
-2. Configure project settings:
-   - **Framework Preset**: Vite
-   - **Root Directory**: rontend
-   - **Build Command**: 
-pm run build
-   - **Output Directory**: dist
-3. Add Environment Variable:
-   - VITE_BACKEND_URL: https://matrimonial-app-pu7b.onrender.com
-4. The included rontend/vercel.json ensures all SPA client-side routes redirect properly to index.html.
-
-### Backend Deployment (Render)
-The backend is deployed as a Web Service on Render:
-1. Create a new **Web Service** pointing to the repository.
-2. Configure service settings:
-   - **Root Directory**: ackend
-   - **Build Command**: 
-pm install
-   - **Start Command**: 
-ode server.js
-3. Add Environment Variables:
-   - NODE_ENV: production
-   - MONGO_URI: mongodb+srv://...
-   - JWT_SECRET: your_secure_jwt_secret
-   - FRONTEND_URL: https://matrimonialapp.vercel.app
-   - CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET
-4. Health check endpoint: GET / returns "API Running".
-
----
-
-## 🛡️ Security & Engineering Practices
-
-- **Strict Mutual Privacy**: Private chat endpoints and photo galleries verify bidirectional acceptance in the database before granting access.
-- **Dynamic CORS Policy**: Whitelists local development origins, production Vercel domains (*.vercel.app), and custom frontend URLs while rejecting unauthorized origins.
-- **Resilient MongoDB Connection**: Connect logic includes an automatic 5-attempt retry loop with exponential backoff on connection interruptions.
-- **WebRTC NAT Traversal**: Google STUN servers resolve public IP addresses for seamless peer-to-peer connection establishment across different networks.
+- **Zero Polling Real-Time Communication**: Chat relies strictly on WebSocket events, avoiding interval polling and screen flickering.
+- **Stateless Authorization**: JWT verification middleware guards all sensitive routes without holding session state in memory.
+- **Input Sanitization**: Password hashing with unique bcrypt salts and strict JSON payload validation.
+- **Graceful Degradation**: WebRTC calling gracefully falls back to audio when video hardware is unavailable.
+- **CORS Protection**: Origin-whitelisted cross-origin request handling supporting local and production domains.
 
 ---
 
 ## 📄 License
-
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).

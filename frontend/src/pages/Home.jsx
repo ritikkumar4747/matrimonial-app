@@ -183,7 +183,7 @@ export default function Home() {
               <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/60 relative overflow-hidden">
                 <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
                   <h3 className="text-2xl font-bold text-gray-800">
-                    Why Choose MatrioMoney?
+                    Why Choose Matrimonial?
                   </h3>
                   <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-rose-50 text-rose-600">
                     Trusted
