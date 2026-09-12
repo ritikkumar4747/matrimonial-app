@@ -2,6 +2,8 @@ import express from "express";
 import Badge from "../models/Badge.js";
 import User from "../models/User.js";
 import DailySwipe from "../models/DailySwipe.js";
+import Interest from "../models/Interest.js";
+import Message from "../models/Message.js";
 import protect from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -71,12 +73,14 @@ router.get("/:userId/progress", protect, async (req, res) => {
     }
 
     // Count various metrics
-    const receivedLikes = await User.countDocuments({
-      "sentInterests.to": userId,
-      "sentInterests.status": "interested",
+    const receivedLikes = await Interest.countDocuments({
+      to: userId,
+      status: "accepted",
     });
 
-    const messageCount = await User.findById(userId).select("conversations");
+    const messagesExchanged = await Message.countDocuments({
+      $or: [{ sender: userId }, { receiver: userId }]
+    });
 
     const swipedThisWeek = await DailySwipe.countDocuments({
       userId,
@@ -86,12 +90,14 @@ router.get("/:userId/progress", protect, async (req, res) => {
       },
     });
 
+    const streak = await calculateDailyStreak(userId);
+
     const progress = {
       profileCompletion: calculateProfileCompletion(user),
       likesReceived: receivedLikes,
-      messagesExchanged: messageCount ? Object.keys(messageCount.conversations || {}).length : 0,
+      messagesExchanged,
       swipedThisWeek,
-      dailyStreak: calculateDailyStreak(userId),
+      dailyStreak: streak,
     };
 
     res.json(progress);

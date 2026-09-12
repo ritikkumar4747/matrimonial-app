@@ -11,13 +11,12 @@ import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import interestRoutes from "./routes/interestRoutes.js";
 import chatRoutes from "./routes/chatRoutes.js";
-import chatbotRoutes from "./routes/chatbotRoutes.js";
 import dailyMatchRoutes from "./routes/dailyMatchRoutes.js";
 import badgeRoutes from "./routes/badgeRoutes.js";
 import successStoryRoutes from "./routes/successStoryRoutes.js";
-import icebreakerRoutes from "./routes/icebreakerRoutes.js";
 import profileStrengthRoutes from "./routes/profileStrengthRoutes.js";
 import galleryRoutes from "./routes/galleryRoutes.js";
+import storyRoutes from "./routes/storyRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -95,13 +94,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/interest", interestRoutes);
 app.use("/api/chat", chatRoutes);
-app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/daily-match", dailyMatchRoutes);
 app.use("/api/badges", badgeRoutes);
 app.use("/api/success-stories", successStoryRoutes);
-app.use("/api/icebreakers", icebreakerRoutes);
 app.use("/api/profile-strength", profileStrengthRoutes);
 app.use("/api/gallery", galleryRoutes);
+app.use("/api/stories", storyRoutes);
 
 app.get("/", (req, res) => {
   res.send("API Running");

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-export default function Footer({ onOpenChatbot }) {
+export default function Footer() {
   const quickLinks = [
     { label: 'Privacy Policy', href: '#privacy' },
     { label: 'Terms & Conditions', href: '#terms' },
@@ -19,8 +19,8 @@ export default function Footer({ onOpenChatbot }) {
   const contactChannels = [
     { icon: '📧', label: 'Email', value: 'support@matriomoney.com', href: 'mailto:support@matriomoney.com' },
     { icon: '📱', label: 'Phone', value: '+1 (800) MATRIO-1', href: 'tel:+18006287461' },
-    { icon: '💬', label: 'Live Chat', value: 'Available 24/7', href: '#chat', onClick: onOpenChatbot },
-    { icon: '🏢', label: 'Address', value: 'San Francisco, CA', href: '#address' }
+    { icon: '🕒', label: 'Support Hours', value: '24/7 Assistance', href: 'mailto:support@matriomoney.com' },
+    { icon: '🏢', label: 'Location', value: 'San Francisco, CA', href: '#address' }
   ];
 
   const containerVariants = {
@@ -66,7 +66,7 @@ export default function Footer({ onOpenChatbot }) {
               💕 MatrioMoney
             </h3>
             <p className="text-sm text-gray-400 leading-relaxed mb-6">
-              AI-powered matchmaking platform built for meaningful connections. Finding your perfect match has never been easier.
+              A trusted matrimonial platform engineered for meaningful connections and lifelong companionship. Verified profiles, secure communication, and real-time calling.
             </p>
             <div className="flex gap-4">
               <motion.a 

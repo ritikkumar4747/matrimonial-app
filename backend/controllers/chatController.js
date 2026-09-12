@@ -2,9 +2,13 @@ import Message from "../models/Message.js";
 import Interest from "../models/Interest.js";
 
 const ensureMutualAccepted = async (userId, otherId) => {
-  const sent = await Interest.findOne({ from: userId, to: otherId, status: "accepted" });
-  const received = await Interest.findOne({ from: otherId, to: userId, status: "accepted" });
-  return Boolean(sent && received);
+  const mutual = await Interest.findOne({
+    $or: [
+      { from: userId, to: otherId, status: "accepted" },
+      { from: otherId, to: userId, status: "accepted" }
+    ]
+  });
+  return Boolean(mutual);
 };
 
 export const getMessages = async (req, res) => {

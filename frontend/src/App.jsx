@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -19,23 +18,17 @@ import PrivateRoute from "./routes/PrivateRoute";
 import PublicRoute from "./routes/PublicRoute";
 import PrivateLayout from "./layouts/PrivateLayout";
 import PublicLayout from "./layouts/PublicLayout";
-import Chatbot from "./components/Chatbot";
-import FloatingChatButton from "./components/FloatingChatButton";
 
 export default function App() {
-  const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-
   return (
     <>
       <Routes>
         <Route
           path="/"
           element={
-            <PublicRoute>
-              <PublicLayout>
-                <Home />
-              </PublicLayout>
-            </PublicRoute>
+            <PublicLayout>
+              <Home />
+            </PublicLayout>
           }
         />
 
@@ -98,12 +91,6 @@ export default function App() {
           element={<PrivateRoute><PrivateLayout><DailyMatch /></PrivateLayout></PrivateRoute>}
         />
       </Routes>
-
-      {/* Floating Chat Button - Available on all pages */}
-      <FloatingChatButton onClick={() => setIsChatbotOpen(true)} />
-      
-      {/* Chatbot Modal - Available on all pages */}
-      <Chatbot isOpen={isChatbotOpen} onClose={() => setIsChatbotOpen(false)} />
     </>
   );
 }

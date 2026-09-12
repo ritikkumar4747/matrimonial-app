@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 export default function Navbar() {
@@ -7,6 +7,15 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -26,16 +35,22 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200">
+    <nav
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/90 backdrop-blur-md border-b border-gray-200/60 shadow-sm"
+          : "bg-transparent border-b border-transparent"
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex justify-between items-center">
-          {/* Logo */}
+          {/* Brand Logo */}
           <Link
             to={user ? "/dashboard" : "/"}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2.5 group"
           >
-            <div className="text-3xl">💕</div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-600 bg-clip-text text-transparent">
+            <div className="text-3xl transform group-hover:scale-110 transition-transform">💕</div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-primary-500 to-secondary-600 bg-clip-text text-transparent tracking-tight">
               MatrioMoney
             </span>
           </Link>
@@ -46,15 +61,15 @@ export default function Navbar() {
               <>
                 <Link 
                   to="/login" 
-                  className="text-gray-700 hover:text-primary-600 font-medium transition-colors"
+                  className="text-gray-700 hover:text-pink-600 font-semibold text-sm transition-colors"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="btn-primary"
+                  className="px-5 py-2.5 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:shadow-lg hover:shadow-pink-500/30 transition-all transform hover:-translate-y-0.5"
                 >
-                  Register
+                  Register Free
                 </Link>
               </>
             ) : (
@@ -63,10 +78,10 @@ export default function Navbar() {
                   <Link
                     key={link.path}
                     to={link.path}
-                    className={`flex items-center gap-2 font-medium transition-colors ${
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-semibold text-sm transition-all ${
                       isActive(link.path)
-                        ? "text-primary-600"
-                        : "text-gray-700 hover:text-primary-600"
+                        ? "bg-pink-50 text-pink-600 shadow-sm"
+                        : "text-gray-700 hover:text-pink-600 hover:bg-white/50"
                     }`}
                   >
                     <span>{link.icon}</span>
@@ -75,7 +90,7 @@ export default function Navbar() {
                 ))}
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 rounded-xl border-2 border-red-300 text-red-600 hover:bg-red-50 font-semibold transition-all"
+                  className="px-4 py-1.5 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 text-sm font-semibold transition-all"
                 >
                   Logout
                 </button>

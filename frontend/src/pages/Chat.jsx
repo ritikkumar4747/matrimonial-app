@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import API from "../services/api";
-import SmartIcebreakers from "../components/SmartIcebreakers";
 import socket from "../Socket";
 
 export default function Chat() {
@@ -168,9 +167,9 @@ export default function Chat() {
     }
   };
 
-  const loadMessages = async () => {
+  const loadMessages = async (isInitial = false) => {
     try {
-      setLoading(true);
+      if (isInitial) setLoading(true);
       const { data } = await API.get(`/chat/${id}`);
       setMessages(data);
       setBlocked(false);
@@ -183,14 +182,12 @@ export default function Chat() {
         setError("Failed to load messages");
       }
     } finally {
-      setLoading(false);
+      if (isInitial) setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadMessages();
-    const interval = setInterval(loadMessages, 8000);
-    return () => clearInterval(interval);
+    loadMessages(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -282,11 +279,23 @@ export default function Chat() {
       endCall(false);
     };
 
+    const onReceiveMessage = (msg) => {
+      const senderId = typeof msg.sender === "object" ? msg.sender?._id : msg.sender;
+      const receiverId = typeof msg.receiver === "object" ? msg.receiver?._id : msg.receiver;
+      if (senderId === id || receiverId === id) {
+        setMessages((prev) => {
+          if (prev.some((m) => m._id && m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
+      }
+    };
+
     socket.on("call:offer", onOffer);
     socket.on("call:answer", onAnswer);
     socket.on("call:ice", onIce);
     socket.on("call:reject", onReject);
     socket.on("call:end", onEnd);
+    socket.on("receiveMessage", onReceiveMessage);
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
 
@@ -296,6 +305,7 @@ export default function Chat() {
       socket.off("call:ice", onIce);
       socket.off("call:reject", onReject);
       socket.off("call:end", onEnd);
+      socket.off("receiveMessage", onReceiveMessage);
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
       endCall(false);
@@ -499,6 +509,7 @@ export default function Chat() {
     try {
       const { data } = await API.post("/chat/send", { receiver: id, text });
       setMessages(prev => [...prev, data]);
+      socket.emit("sendMessage", data);
       setText("");
       setBlocked(false);
       setError("");
@@ -573,13 +584,11 @@ export default function Chat() {
         ) : error ? (
           <div className="h-full flex items-center justify-center text-red-500 text-sm text-center px-4">{error}</div>
         ) : messages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center space-y-6">
+          <div className="h-full flex flex-col items-center justify-center space-y-3">
             <div className="text-gray-500 text-center">
-              <p className="text-2xl mb-2">💬</p>
-              <p>Say hi to start the conversation</p>
-            </div>
-            <div className="w-full max-w-lg">
-              <SmartIcebreakers userId={id} onSelect={(msg) => setText(msg)} />
+              <p className="text-3xl mb-2">💬</p>
+              <p className="font-medium text-gray-700">Say hi to start the conversation</p>
+              <p className="text-xs text-gray-400 mt-1">Send a message to connect with your match</p>
             </div>
           </div>
         ) : (

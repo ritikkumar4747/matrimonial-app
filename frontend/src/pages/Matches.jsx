@@ -99,7 +99,7 @@ export default function Matches() {
       >
         <h1 className="section-title">Discover Your Perfect Match</h1>
         <p className="text-gray-600 text-lg">
-          AI-powered matching • {users.length} profiles found
+          Compatibility matching • {users.length} profiles found
         </p>
       </motion.div>
 

@@ -1,6 +1,8 @@
 import express from "express";
+import mongoose from "mongoose";
 import DailySwipe from "../models/DailySwipe.js";
 import User from "../models/User.js";
+import Interest from "../models/Interest.js";
 import protect from "../middleware/authMiddleware.js";
 import { calculateMatchScore } from "../utils/matchscore.js";
 
@@ -107,7 +109,6 @@ router.post("/daily-match/:userId/swipe", protect, async (req, res) => {
 
     // If like, create interest
     if (action === "like") {
-      const Interest = require("../models/Interest.js").default;
       await Interest.findOneAndUpdate(
         { from: userId, to: matchedUserId },
         {
@@ -138,7 +139,7 @@ router.get("/daily-match/:userId/stats", protect, async (req, res) => {
     const stats = await DailySwipe.aggregate([
       {
         $match: {
-          userId: new (require("mongoose").Types.ObjectId)(userId),
+          userId: new mongoose.Types.ObjectId(userId),
           date: { $gte: thirtyDaysAgo },
         },
       },
@@ -155,13 +156,16 @@ router.get("/daily-match/:userId/stats", protect, async (req, res) => {
       date: { $gte: thirtyDaysAgo },
     });
 
+    const activeDates = await DailySwipe.find({
+      userId,
+      date: { $gte: thirtyDaysAgo }
+    }).distinct("date");
+
     res.json({
       totalSwipes,
       likes: stats.find((s) => s._id === "like")?.count || 0,
       passes: stats.find((s) => s._id === "pass")?.count || 0,
-      daysActive: await DailySwipe.find({ userId, date: { $gte: thirtyDaysAgo } })
-        .distinct("date")
-        .countDocuments(),
+      daysActive: activeDates.length,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
